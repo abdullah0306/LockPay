@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const Header = () => {
     const [activeNav, setActiveNav] = useState('Dashboard');
@@ -16,7 +17,9 @@ export const Header = () => {
                     {/* Left Section - Logo, Brand, and Navigation */}
                     <div className="flex items-center space-x-4 lg:space-x-8">
                         <div className="flex items-center">
-                            <Image src="/logo.png" alt="AltiK X" width={120} height={120} className="w-20 h-10" />
+                            <Link href="/" className="flex items-center gap-2">
+                                <img src="/logo.svg" alt="logo" className="h-8 md:h-10" />
+                            </Link>
                         </div>
 
                         {/* Desktop Navigation */}
@@ -26,8 +29,8 @@ export const Header = () => {
                                     key={item}
                                     onClick={() => setActiveNav(item)}
                                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeNav === item
-                                            ? 'text-white'
-                                            : 'text-gray-300 hover:text-white'
+                                        ? 'text-white'
+                                        : 'text-gray-300 hover:text-white'
                                         }`}
                                 >
                                     {item}
@@ -156,7 +159,7 @@ export const Header = () => {
                                     className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 />
                             </div>
-                            
+
                             {/* Mobile Navigation Items */}
                             {navItems.map((item) => (
                                 <button
@@ -165,11 +168,10 @@ export const Header = () => {
                                         setActiveNav(item);
                                         setIsMobileMenuOpen(false);
                                     }}
-                                    className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                                        activeNav === item
+                                    className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${activeNav === item
                                             ? 'text-white bg-gray-700'
                                             : 'text-gray-300 hover:text-white hover:bg-gray-700'
-                                    }`}
+                                        }`}
                                 >
                                     {item}
                                 </button>
