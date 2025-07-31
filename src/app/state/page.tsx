@@ -11,7 +11,7 @@ import {
   EscrowTransaction, 
   EscrowStatusIndicator, 
   EscrowReleaseCondition,
-  DisputeManagement as DisputeManagementType,
+  DisputeManagementData,
   EscrowFundsHistory as EscrowFundsHistoryType
 } from '@/types/escrow-state';
 
@@ -96,7 +96,7 @@ export default function StatePage() {
     }
   ];
 
-  const disputeManagement: DisputeManagementType = {
+  const disputeManagement: DisputeManagementData = {
     status: 'Under Review',
     filedBy: 'Alice B. (Buyer)',
     filedOn: '2023-10-26 09:15 AM',

@@ -35,7 +35,7 @@ export interface EscrowReleaseCondition {
   icon: 'check' | 'pending' | 'x';
 }
 
-export interface DisputeManagement {
+export interface DisputeManagementData {
   status: string;
   filedBy: string;
   filedOn: string;

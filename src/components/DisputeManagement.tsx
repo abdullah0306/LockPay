@@ -1,9 +1,9 @@
 "use client";
 
-import { DisputeManagement } from '@/types/escrow-state';
+import { DisputeManagementData } from '@/types/escrow-state';
 
 interface DisputeManagementProps {
-  dispute: DisputeManagement;
+  dispute: DisputeManagementData;
   onArbitrateDispute: () => void;
   onProvideEvidence: () => void;
   onContactSupport: () => void;
