@@ -1,7 +1,7 @@
-import { EscrowFundsHistory } from '@/types/escrow-state';
+import { EscrowFundsHistoryItem } from '@/types/escrow-state';
 
 interface EscrowFundsHistoryProps {
-  history: EscrowFundsHistory[];
+  history: EscrowFundsHistoryItem[];
 }
 
 export const EscrowFundsHistory = ({ history }: EscrowFundsHistoryProps) => {

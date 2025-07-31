@@ -12,7 +12,7 @@ import {
   EscrowStatusIndicator, 
   EscrowReleaseCondition,
   DisputeManagementData,
-  EscrowFundsHistory as EscrowFundsHistoryType
+  EscrowFundsHistoryItem
 } from '@/types/escrow-state';
 
 export default function StatePage() {
@@ -104,7 +104,7 @@ export default function StatePage() {
     evidence: 'View Attached Files'
   };
 
-  const escrowFundsHistory: EscrowFundsHistoryType[] = [
+  const escrowFundsHistory: EscrowFundsHistoryItem[] = [
     {
       id: '1',
       event: 'Funds Locked in Escrow',

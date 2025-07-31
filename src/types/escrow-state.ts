@@ -43,7 +43,7 @@ export interface DisputeManagementData {
   evidence: string;
 }
 
-export interface EscrowFundsHistory {
+export interface EscrowFundsHistoryItem {
   id: string;
   event: string;
   timestamp: string;
