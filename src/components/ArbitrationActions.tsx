@@ -8,8 +8,8 @@ interface ArbitrationActionsProps {
 
 export const ArbitrationActions = ({ onSubmit, onCancel, isSubmitting = false }: ArbitrationActionsProps) => {
   return (
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-      <button 
+    <div className="flex gap-3 sm:gap-4">
+      <button
         onClick={onSubmit}
         disabled={isSubmitting}
         className="flex-1 sm:flex-none flex items-center justify-center px-4 sm:px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
@@ -19,7 +19,7 @@ export const ArbitrationActions = ({ onSubmit, onCancel, isSubmitting = false }:
         </svg>
         {isSubmitting ? 'Submitting...' : 'Submit Decision'}
       </button>
-      <button 
+      <button
         onClick={onCancel}
         disabled={isSubmitting}
         className="flex-1 sm:flex-none flex items-center justify-center px-4 sm:px-6 py-3 bg-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"

@@ -12,32 +12,32 @@ export const DisputeDetails = ({ dispute, onProvideEvidence, onCancelDispute }: 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">Dispute Details</h2>
-      
-      <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Initiated By:</span>
-          <span className="font-medium text-gray-900 text-sm sm:text-base">{dispute.initiatedBy}</span>
+
+      <div className="space-y-4 sm:space-y-4 mb-6 sm:mb-8">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Initiated By:</span>
+          <span className="text-gray-900 text-sm sm:text-base font-semibold">{dispute.initiatedBy}</span>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Reason:</span>
-          <span className="font-medium text-gray-900 text-sm sm:text-base">{dispute.reason}</span>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Reason:</span>
+          <span className="text-gray-900 text-sm sm:text-base font-semibold">{dispute.reason}</span>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Arbitrator:</span>
-          <span className="font-medium text-gray-900 text-sm sm:text-base">{dispute.arbitrator}</span>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Arbitrator:</span>
+          <span className="text-gray-900 text-sm sm:text-base font-semibold">{dispute.arbitrator}</span>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Current Status:</span>
-          <span className="font-medium text-gray-900 text-sm sm:text-base">{dispute.currentStatus}</span>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Current Status:</span>
+          <span className="text-gray-900 text-sm sm:text-base font-semibold">{dispute.currentStatus}</span>
         </div>
       </div>
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-        <button 
+        <button
           onClick={onProvideEvidence}
           className="flex-1 sm:flex-none flex items-center justify-center px-4 sm:px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
         >
@@ -46,7 +46,7 @@ export const DisputeDetails = ({ dispute, onProvideEvidence, onCancelDispute }: 
           </svg>
           Provide Evidence
         </button>
-        <button 
+        <button
           onClick={onCancelDispute}
           className="flex-1 sm:flex-none flex items-center justify-center px-4 sm:px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
         >

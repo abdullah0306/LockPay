@@ -17,33 +17,33 @@ export const TransactionOverview = ({ transaction }: TransactionOverviewProps) =
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">Overview</h2>
-      
-      <div className="space-y-3 sm:space-y-4">
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Transaction ID:</span>
-          <span className="font-medium text-gray-900 text-sm sm:text-base">#{transaction.id}</span>
+
+      <div className="space-y-4 sm:space-y-4">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Transaction ID:</span>
+          <span className="text-gray-900 text-sm sm:text-base font-semibold">#{transaction.id}</span>
         </div>
-        
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Status:</span>
-          <span className={`px-2 py-1 text-xs font-medium rounded-full self-start sm:self-auto ${statusClass}`}>
+
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Status:</span>
+          <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusClass}`}>
             {transaction.status}
           </span>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Amount:</span>
-          <span className="font-medium text-blue-600 text-sm sm:text-base">{transaction.amount.value} {transaction.amount.currency}</span>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Amount:</span>
+          <span className="font-bold text-blue-600 text-sm sm:text-base">{transaction.amount.value} {transaction.amount.currency}</span>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Buyer:</span>
-          <span className="font-medium text-gray-900 text-sm sm:text-base">{transaction.buyer}</span>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Buyer:</span>
+          <span className="text-gray-900 text-sm sm:text-base font-semibold">{transaction.buyer}</span>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
-          <span className="text-gray-600 text-sm sm:text-base">Seller:</span>
-          <span className="font-medium text-gray-900 text-sm sm:text-base">{transaction.seller}</span>
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm sm:text-base font-medium">Seller:</span>
+          <span className="text-gray-900 text-sm sm:text-base font-semibold">{transaction.seller}</span>
         </div>
       </div>
     </div>
