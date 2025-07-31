@@ -10,7 +10,7 @@ import {
   DetailTransaction, 
   DetailReleaseCondition, 
   DetailDisputeInfo,
-  DetailTransactionHistory as DetailTransactionHistoryType
+  DetailTransactionHistoryItem
 } from '@/types/detail-page';
 
 export default function DetailPage() {
@@ -55,7 +55,7 @@ export default function DetailPage() {
     evidence: 'View Attached Files'
   };
 
-  const transactionHistory: DetailTransactionHistoryType[] = [
+  const transactionHistory: DetailTransactionHistoryItem[] = [
     {
       id: '1',
       event: 'Funds Locked in Escrow',
