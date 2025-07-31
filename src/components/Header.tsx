@@ -3,12 +3,19 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export const Header = () => {
-    const [activeNav, setActiveNav] = useState('Dashboard');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
 
-    const navItems = ['Dashboard', 'Detail', 'State'];
+    const navItems = [
+        { name: 'Dashboard', href: '/' },
+        { name: 'Detail', href: '/dashboard' },
+        { name: 'State', href: '/state' }
+    ];
+
+    const isActive = (href: string) => pathname === href;
 
     return (
         <header className="bg-[#121417] text-white">
@@ -25,16 +32,17 @@ export const Header = () => {
                         {/* Desktop Navigation */}
                         <nav className="hidden lg:flex space-x-8">
                             {navItems.map((item) => (
-                                <button
-                                    key={item}
-                                    onClick={() => setActiveNav(item)}
-                                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeNav === item
-                                        ? 'text-white'
-                                        : 'text-gray-300 hover:text-white'
-                                        }`}
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                                        isActive(item.href)
+                                            ? 'text-white'
+                                            : 'text-gray-300 hover:text-white'
+                                    }`}
                                 >
-                                    {item}
-                                </button>
+                                    {item.name}
+                                </Link>
                             ))}
                         </nav>
                     </div>
@@ -162,19 +170,18 @@ export const Header = () => {
 
                             {/* Mobile Navigation Items */}
                             {navItems.map((item) => (
-                                <button
-                                    key={item}
-                                    onClick={() => {
-                                        setActiveNav(item);
-                                        setIsMobileMenuOpen(false);
-                                    }}
-                                    className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${activeNav === item
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                                        isActive(item.href)
                                             ? 'text-white bg-gray-700'
                                             : 'text-gray-300 hover:text-white hover:bg-gray-700'
-                                        }`}
+                                    }`}
                                 >
-                                    {item}
-                                </button>
+                                    {item.name}
+                                </Link>
                             ))}
                         </div>
                     </div>
