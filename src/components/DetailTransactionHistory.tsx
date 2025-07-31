@@ -1,7 +1,7 @@
-import { DetailTransactionHistory } from '@/types/detail-page';
+import { DetailTransactionHistoryItem } from '@/types/detail-page';
 
 interface DetailTransactionHistoryProps {
-  history: DetailTransactionHistory[];
+  history: DetailTransactionHistoryItem[];
 }
 
 export const DetailTransactionHistory = ({ history }: DetailTransactionHistoryProps) => {

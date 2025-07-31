@@ -24,7 +24,7 @@ export interface DetailDisputeInfo {
   evidence: string;
 }
 
-export interface DetailTransactionHistory {
+export interface DetailTransactionHistoryItem {
   id: string;
   event: string;
   timestamp: string;
