@@ -2,21 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-	line-height: 1.5;
-	font-weight: 400;
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	font-family: 'Inter', sans-serif;
-	font-optical-sizing: auto;
-	font-style: normal;
-	font-variation-settings: 'slnt' 0;
+@font-face {
+  font-family: 'ALIKE';
+  src: url('/fonts/ALIKE-Regular.woff2') format('woff2'),
+       url('/fonts/ALIKE-Regular.woff') format('woff'),
+       url('/fonts/ALIKE-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
-@layer base {
-	body {
-		@apply bg-zinc-950 text-neutral-200;
-	}
+@font-face {
+  font-family: 'ALIKE';
+  src: url('/fonts/ALIKE-Bold.woff2') format('woff2'),
+       url('/fonts/ALIKE-Bold.woff') format('woff'),
+       url('/fonts/ALIKE-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 245, 245, 245;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: 'ALIKE';
+}
+
+* {
+  font-family: 'ALIKE';
 }

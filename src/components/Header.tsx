@@ -1,0 +1,183 @@
+"use client";
+
+import { useState } from 'react';
+import Image from 'next/image';
+
+export const Header = () => {
+    const [activeNav, setActiveNav] = useState('Dashboard');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const navItems = ['Dashboard', 'Detail', 'State'];
+
+    return (
+        <header className="bg-[#121417] text-white">
+            <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div className="flex items-center justify-between h-16">
+                    {/* Left Section - Logo, Brand, and Navigation */}
+                    <div className="flex items-center space-x-4 lg:space-x-8">
+                        <div className="flex items-center">
+                            <Image src="/logo.png" alt="AltiK X" width={120} height={120} className="w-20 h-10" />
+                        </div>
+
+                        {/* Desktop Navigation */}
+                        <nav className="hidden lg:flex space-x-8">
+                            {navItems.map((item) => (
+                                <button
+                                    key={item}
+                                    onClick={() => setActiveNav(item)}
+                                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeNav === item
+                                            ? 'text-white'
+                                            : 'text-gray-300 hover:text-white'
+                                        }`}
+                                >
+                                    {item}
+                                </button>
+                            ))}
+                        </nav>
+                    </div>
+
+                    {/* Right Section - Search, Connect Wallet, User Icon */}
+                    <div className="flex items-center space-x-2 lg:space-x-4">
+                        {/* Search Bar - Hidden on mobile */}
+                        <div className="relative hidden md:block">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg
+                                    className="h-5 w-5 text-gray-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search assets..."
+                                className="block w-48 lg:w-64 pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            />
+                        </div>
+
+                        {/* Connect Wallet Button - Responsive text */}
+                        <button className="flex items-center px-3 lg:px-4 py-2 bg-[#7C7C7C] rounded-md text-sm font-medium text-white hover:bg-gray-600 transition-colors">
+                            <svg
+                                className="w-4 h-4 lg:w-5 lg:h-5 mr-1 lg:mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                                />
+                            </svg>
+                            <span className="hidden sm:inline">Connect Wallet</span>
+                            <span className="sm:hidden">Connect</span>
+                        </button>
+
+                        {/* User Icon */}
+                        <button className="p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                            <svg
+                                className="w-5 h-5 lg:w-6 lg:h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                />
+                            </svg>
+                        </button>
+
+                        {/* Mobile menu button */}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="lg:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
+                        >
+                            <svg
+                                className="w-6 h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                {isMobileMenuOpen ? (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                ) : (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                )}
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Navigation Menu */}
+                {isMobileMenuOpen && (
+                    <div className="lg:hidden">
+                        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-700">
+                            {/* Mobile Search Bar */}
+                            <div className="relative mb-4">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg
+                                        className="h-5 w-5 text-gray-400"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                        />
+                                    </svg>
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Search assets..."
+                                    className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                />
+                            </div>
+                            
+                            {/* Mobile Navigation Items */}
+                            {navItems.map((item) => (
+                                <button
+                                    key={item}
+                                    onClick={() => {
+                                        setActiveNav(item);
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                                        activeNav === item
+                                            ? 'text-white bg-gray-700'
+                                            : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                                    }`}
+                                >
+                                    {item}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </header>
+    );
+}; 
