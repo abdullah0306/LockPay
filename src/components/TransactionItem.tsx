@@ -19,16 +19,12 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const statusClass = statusColors[transaction.status] || 'bg-gray-500 text-white';
 
   const handleTransactionClick = () => {
-    if (transaction.status === 'Disputed') {
-      router.push(`/disputes/${transaction.id}`);
-    }
+    router.push(`/transactions/${transaction.id}`);
   };
 
   return (
     <div 
-      className={`border-b border-gray-100 py-4 last:border-b-0 ${
-        transaction.status === 'Disputed' ? 'cursor-pointer hover:bg-gray-50 transition-colors' : ''
-      }`}
+      className="border-b border-gray-100 py-4 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors"
       onClick={handleTransactionClick}
     >
       <div className="flex items-center justify-between mb-2">
