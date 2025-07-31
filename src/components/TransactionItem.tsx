@@ -1,4 +1,7 @@
+"use client";
+
 import { Transaction } from '@/types/transaction';
+import { useRouter } from 'next/navigation';
 
 interface TransactionItemProps {
   transaction: Transaction;
@@ -12,10 +15,22 @@ const statusColors = {
 };
 
 export const TransactionItem = ({ transaction }: TransactionItemProps) => {
+  const router = useRouter();
   const statusClass = statusColors[transaction.status] || 'bg-gray-500 text-white';
 
+  const handleTransactionClick = () => {
+    if (transaction.status === 'Disputed') {
+      router.push(`/disputes/${transaction.id}`);
+    }
+  };
+
   return (
-    <div className="border-b border-gray-100 py-4 last:border-b-0">
+    <div 
+      className={`border-b border-gray-100 py-4 last:border-b-0 ${
+        transaction.status === 'Disputed' ? 'cursor-pointer hover:bg-gray-50 transition-colors' : ''
+      }`}
+      onClick={handleTransactionClick}
+    >
       <div className="flex items-center justify-between mb-2">
         <span className="text-gray-700 font-medium">#{transaction.id}</span>
         <span className={`px-3 py-1 rounded-full text-sm ${statusClass}`}>
