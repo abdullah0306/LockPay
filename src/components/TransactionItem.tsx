@@ -19,7 +19,12 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const statusClass = statusColors[transaction.status] || 'bg-gray-500 text-white';
 
   const handleTransactionClick = () => {
-    router.push(`/transactions/${transaction.id}`);
+    // Special case: TXN78901 navigates to the enhanced dashboard
+    if (transaction.id === 'TXN78901') {
+      router.push('/dashboard');
+    } else {
+      router.push(`/transactions/${transaction.id}`);
+    }
   };
 
   return (
@@ -49,6 +54,12 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           <span className="text-gray-700">{transaction.seller}</span>
         </div>
       </div>
+      {/* Show indicator for enhanced dashboard link */}
+      {transaction.id === 'TXN78901' && (
+        <div className="mt-2 text-xs text-blue-600 font-medium">
+          → Click to view Enhanced Dashboard
+        </div>
+      )}
     </div>
   );
 };
