@@ -1,18 +1,27 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import { DetailDisputeInfo } from '@/types/detail-page';
 
 interface DetailDisputeManagementProps {
   dispute: DetailDisputeInfo;
+  transactionId: string;
   onArbitrateDispute: () => void;
   onProvideEvidence: () => void;
 }
 
 export const DetailDisputeManagement = ({ 
   dispute, 
+  transactionId,
   onArbitrateDispute, 
   onProvideEvidence 
 }: DetailDisputeManagementProps) => {
+  const router = useRouter();
+
+  const handleViewEvidence = () => {
+    // Navigate to view evidence page using the transaction ID
+    router.push(`/view-evidence/${transactionId}`);
+  };
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">Dispute Management</h2>
@@ -40,7 +49,10 @@ export const DetailDisputeManagement = ({
 
         <div className="flex justify-between items-center">
           <span className="text-gray-500 text-sm sm:text-base font-medium">Evidence:</span>
-          <button className="text-blue-600 text-sm sm:text-base font-medium hover:text-blue-800 transition-colors">
+          <button 
+            onClick={handleViewEvidence}
+            className="text-blue-600 text-sm sm:text-base font-medium hover:text-blue-800 transition-colors"
+          >
             {dispute.evidence}
           </button>
         </div>

@@ -128,6 +128,7 @@ export default function DetailPage() {
           {/* Dispute Management */}
           <DetailDisputeManagement 
             dispute={disputeInfo}
+            transactionId={transactionId}
             onArbitrateDispute={handleArbitrateDispute}
             onProvideEvidence={handleProvideEvidence}
           />
