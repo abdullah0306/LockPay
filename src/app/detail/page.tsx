@@ -84,8 +84,8 @@ export default function DetailPage() {
   ];
 
   const handleVerifyCondition = () => {
-    console.log('Verifying condition');
-    // Handle condition verification logic
+    // Navigate to verify condition page
+    window.location.href = `/verify-condition/${transactionId}`;
   };
 
   const handleReleaseFunds = () => {
