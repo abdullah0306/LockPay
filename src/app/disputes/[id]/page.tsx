@@ -13,8 +13,6 @@ export default function DisputeArbitrationPage() {
   const params = useParams();
   const router = useRouter();
   const disputeId = params.id as string;
-  const [decision, setDecision] = useState('seller');
-  const [comments, setComments] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Mock data - in real app, fetch from API
@@ -44,7 +42,12 @@ export default function DisputeArbitrationPage() {
     }
   ];
 
-  const handleSubmit = async () => {
+  const handleSubmitDecision = async (decisionData: {
+    decisionType: string;
+    customAmount: string;
+    reasoning: string;
+  }) => {
+    console.log('Submitting decision:', decisionData);
     setIsSubmitting(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -53,8 +56,9 @@ export default function DisputeArbitrationPage() {
     router.push('/');
   };
 
-  const handleCancel = () => {
-    router.push('/');
+  const handleCancelDecision = () => {
+    // Stay on the same page
+    console.log('Decision cancelled');
   };
 
   return (
@@ -87,17 +91,8 @@ export default function DisputeArbitrationPage() {
 
           {/* Arbitration Decision */}
           <ArbitrationDecision 
-            decision={decision}
-            comments={comments}
-            onDecisionChange={setDecision}
-            onCommentsChange={setComments}
-          />
-
-          {/* Action Buttons */}
-          <ArbitrationActions 
-            onSubmit={handleSubmit}
-            onCancel={handleCancel}
-            isSubmitting={isSubmitting}
+            onSubmit={handleSubmitDecision}
+            onCancel={handleCancelDecision}
           />
         </div>
       </main>
