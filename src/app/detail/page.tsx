@@ -94,8 +94,8 @@ export default function DetailPage() {
   };
 
   const handleArbitrateDispute = () => {
-    console.log('Arbitrating dispute');
-    // Handle dispute arbitration logic
+    // Navigate to arbitrate dispute page
+    window.location.href = `/arbitrate-dispute/${transactionId}`;
   };
 
   const handleProvideEvidence = () => {
