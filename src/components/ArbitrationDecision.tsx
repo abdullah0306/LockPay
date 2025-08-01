@@ -99,7 +99,7 @@ export const ArbitrationDecision = ({ onSubmit, onCancel }: ArbitrationDecisionP
         {/* Arbitrator's Notes */}
         <div>
           <label htmlFor="reasoning" className="block text-sm font-medium text-gray-700 mb-2">
-            Arbitrator's Notes/Reasoning:
+            Arbitrator&apos;s Notes/Reasoning:
           </label>
           <textarea
             id="reasoning"
