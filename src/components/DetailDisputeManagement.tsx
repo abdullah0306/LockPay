@@ -22,6 +22,11 @@ export const DetailDisputeManagement = ({
     // Navigate to view evidence page using the transaction ID
     router.push(`/view-evidence/${transactionId}`);
   };
+
+  const handleProvideEvidence = () => {
+    // Navigate to provide evidence page using the transaction ID
+    router.push(`/provide-evidence/${transactionId}`);
+  };
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">Dispute Management</h2>
@@ -71,7 +76,7 @@ export const DetailDisputeManagement = ({
         </button>
         
         <button
-          onClick={onProvideEvidence}
+          onClick={handleProvideEvidence}
           className="flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-blue-100 text-blue-700 font-medium rounded-lg hover:bg-blue-200 transition-colors text-sm sm:text-base"
         >
           <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
