@@ -22,7 +22,12 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
     // Special case: TXN78901 navigates to the enhanced dashboard
     if (transaction.id === 'TXN78901') {
       router.push('/dashboard');
-    } else {
+    } 
+    // Special case: Disputed transactions navigate to disputes page
+    else if (transaction.status === 'Disputed') {
+      router.push(`/disputes/${transaction.id}`);
+    } 
+    else {
       router.push(`/transactions/${transaction.id}`);
     }
   };
@@ -58,6 +63,12 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
       {transaction.id === 'TXN78901' && (
         <div className="mt-2 text-xs text-blue-600 font-medium">
           → Click to view Enhanced Dashboard
+        </div>
+      )}
+      {/* Show indicator for disputed transactions */}
+      {transaction.status === 'Disputed' && (
+        <div className="mt-2 text-xs text-red-600 font-medium">
+          → Click to view Dispute Details
         </div>
       )}
     </div>
