@@ -7,19 +7,23 @@ interface DetailTransactionSummaryProps {
 const statusConfig = {
   'FUNDS LOCKED': {
     color: 'bg-blue-600 text-white',
-    icon: '🔄'
+    icon: '🔄',
+    tooltip: 'Transaction is active and funds are securely locked in escrow'
   },
   'FULFILLED': {
     color: 'bg-green-600 text-white',
-    icon: '✅'
+    icon: '✅',
+    tooltip: 'Transaction completed successfully and funds have been released'
   },
   'DISPUTED': {
     color: 'bg-red-600 text-white',
-    icon: '⚠️'
+    icon: '⚠️',
+    tooltip: 'Transaction is under review due to a dispute between parties'
   },
   'REFUNDED': {
     color: 'bg-gray-600 text-white',
-    icon: '💰'
+    icon: '💰',
+    tooltip: 'Transaction was cancelled and funds have been returned'
   },
 };
 
@@ -30,7 +34,10 @@ export const DetailTransactionSummary = ({ transaction }: DetailTransactionSumma
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <div className="flex items-start justify-between mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Transaction Summary</h2>
-        <span className={`px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${config.color}`}>
+        <span 
+          className={`px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${config.color}`}
+          title={config.tooltip}
+        >
           <span className="text-sm">{config.icon}</span>
           {transaction.status}
         </span>
@@ -38,22 +45,22 @@ export const DetailTransactionSummary = ({ transaction }: DetailTransactionSumma
 
       <div className="space-y-4 sm:space-y-4">
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm sm:text-base font-medium">Transaction ID:</span>
+          <span className="text-gray-600 text-sm sm:text-base font-medium">Transaction ID:</span>
           <span className="text-gray-900 text-sm sm:text-base font-semibold">#{transaction.id}</span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm sm:text-base font-medium">Amount:</span>
-          <span className="font-bold text-blue-600 text-sm sm:text-base">{transaction.amount.value} {transaction.amount.currency}</span>
+          <span className="text-gray-600 text-sm sm:text-base font-medium">Amount:</span>
+          <span className="font-bold text-blue-700 text-sm sm:text-base">{transaction.amount.value} {transaction.amount.currency}</span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm sm:text-base font-medium">Buyer:</span>
+          <span className="text-gray-600 text-sm sm:text-base font-medium">Buyer:</span>
           <span className="text-gray-900 text-sm sm:text-base font-semibold">{transaction.buyer}</span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm sm:text-base font-medium">Seller:</span>
+          <span className="text-gray-600 text-sm sm:text-base font-medium">Seller:</span>
           <span className="text-gray-900 text-sm sm:text-base font-semibold">{transaction.seller}</span>
         </div>
       </div>

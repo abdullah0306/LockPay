@@ -15,22 +15,22 @@ export const DisputeDetails = ({ dispute, onProvideEvidence, onCancelDispute }: 
 
       <div className="space-y-4 sm:space-y-4 mb-6 sm:mb-8">
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm sm:text-base font-medium">Initiated By:</span>
+          <span className="text-gray-600 text-sm sm:text-base font-medium">Initiated By:</span>
           <span className="text-gray-900 text-sm sm:text-base font-semibold">{dispute.initiatedBy}</span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm sm:text-base font-medium">Reason:</span>
+          <span className="text-gray-600 text-sm sm:text-base font-medium">Reason:</span>
           <span className="text-gray-900 text-sm sm:text-base font-semibold">{dispute.reason}</span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm sm:text-base font-medium">Arbitrator:</span>
+          <span className="text-gray-600 text-sm sm:text-base font-medium">Arbitrator:</span>
           <span className="text-gray-900 text-sm sm:text-base font-semibold">{dispute.arbitrator}</span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm sm:text-base font-medium">Current Status:</span>
+          <span className="text-gray-600 text-sm sm:text-base font-medium">Current Status:</span>
           <span className="text-gray-900 text-sm sm:text-base font-semibold">{dispute.currentStatus}</span>
         </div>
       </div>
