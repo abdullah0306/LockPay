@@ -69,6 +69,7 @@ export const DashboardTransactionCard = ({ title, transactions }: DashboardTrans
         {sortedTransactions.map((transaction) => {
           const config = statusConfig[transaction.status] || statusConfig['Refunded'];
           const isActive = config.isActive;
+          const isDisputed = transaction.status === 'Disputed';
           
           return (
             <div
@@ -82,34 +83,57 @@ export const DashboardTransactionCard = ({ title, transactions }: DashboardTrans
                 <span className={`font-medium ${isActive ? 'text-blue-900 text-lg' : 'text-gray-700'}`}>
                   #{transaction.id}
                 </span>
-                <span 
-                  className={`px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${config.color}`}
-                  title={config.tooltip}
-                >
-                  <span className="text-sm">{config.icon}</span>
-                  {transaction.status}
-                </span>
+                <div className="flex items-center gap-2">
+                  {/* Real-time update indicator for active transactions */}
+                  {isActive && (
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-green-600 font-medium">Live</span>
+                    </div>
+                  )}
+                  <span 
+                    className={`px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${config.color}`}
+                    title={config.tooltip}
+                  >
+                    <span className="text-sm">{config.icon}</span>
+                    {transaction.status}
+                  </span>
+                </div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm font-medium">Amount:</span>
-                  <span className={`font-bold text-sm ${isActive ? 'text-blue-700 text-base' : 'text-blue-700'}`}>
+                  <span className="text-gray-500 text-sm font-medium">Amount:</span>
+                  <span className={`font-bold text-sm ${isActive ? 'text-blue-600 text-base' : 'text-blue-600'}`}>
                     {transaction.amount.value} {transaction.amount.currency}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm font-medium">Buyer:</span>
-                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-800 text-base' : 'text-gray-800'}`}>
+                  <span className="text-gray-500 text-sm font-medium">Buyer:</span>
+                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-900 text-base' : 'text-gray-900'}`}>
                     {transaction.buyer}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm font-medium">Seller:</span>
-                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-800 text-base' : 'text-gray-800'}`}>
+                  <span className="text-gray-500 text-sm font-medium">Seller:</span>
+                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-900 text-base' : 'text-gray-900'}`}>
                     {transaction.seller}
                   </span>
                 </div>
               </div>
+              
+              {/* Enhanced Click indicator for all transactions */}
+              <div className="mt-3 p-2 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+                <div className="flex items-center gap-2 text-gray-700 hover:text-gray-900">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                  <span className="text-sm font-semibold">Click to view details</span>
+                  {/* <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg> */}
+                </div>
+              </div>
+                           
             </div>
           );
         })}
