@@ -7,16 +7,28 @@ interface TransactionItemProps {
   transaction: Transaction;
 }
 
-const statusColors = {
-  'Funds Locked': 'bg-[#0077CC] text-white',
-  'Fulfilled': 'bg-[#4CAF50] text-white',
-  'Disputed': 'bg-[#F44336] text-white',
-  'Refunded': 'bg-[#9E9E9E] text-white',
+const statusConfig = {
+  'Funds Locked': {
+    color: 'bg-blue-600 text-white',
+    icon: '🔄'
+  },
+  'Fulfilled': {
+    color: 'bg-green-600 text-white',
+    icon: '✅'
+  },
+  'Disputed': {
+    color: 'bg-red-600 text-white',
+    icon: '⚠️'
+  },
+  'Refunded': {
+    color: 'bg-gray-600 text-white',
+    icon: '💰'
+  },
 };
 
 export const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const router = useRouter();
-  const statusClass = statusColors[transaction.status] || 'bg-gray-500 text-white';
+  const config = statusConfig[transaction.status] || statusConfig['Refunded'];
 
   const handleTransactionClick = () => {
     // Special case: TXN78901 navigates to the enhanced dashboard
@@ -39,7 +51,8 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
     >
       <div className="flex items-center justify-between mb-2">
         <span className="text-gray-700 font-medium">#{transaction.id}</span>
-        <span className={`px-3 py-1 rounded-full text-sm ${statusClass}`}>
+        <span className={`px-3 py-1 rounded-full text-sm flex items-center gap-1 ${config.color}`}>
+          <span className="text-sm">{config.icon}</span>
           {transaction.status}
         </span>
       </div>
@@ -59,18 +72,6 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           <span className="text-gray-700">{transaction.seller}</span>
         </div>
       </div>
-      {/* Show indicator for enhanced dashboard link */}
-      {transaction.id === 'TXN78901' && (
-        <div className="mt-2 text-xs text-blue-600 font-medium">
-          → Click to view Enhanced Dashboard
-        </div>
-      )}
-      {/* Show indicator for disputed transactions */}
-      {transaction.status === 'Disputed' && (
-        <div className="mt-2 text-xs text-red-600 font-medium">
-          → Click to view Dispute Details
-        </div>
-      )}
     </div>
   );
 };
