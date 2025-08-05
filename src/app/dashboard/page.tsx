@@ -1,11 +1,17 @@
 "use client";
 
+import { useState, useMemo } from 'react';
 import { Header } from '@/components/Header';
 import { DisputeCard } from '@/components/DisputeCard';
 import { DashboardTransactionCard } from '@/components/DashboardTransactionCard';
 import { DashboardDispute, DashboardTransaction } from '@/types/dashboard';
 
 export default function DashboardPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('All');
+  const [amountFilter, setAmountFilter] = useState<string>('All');
+  const [currencyFilter, setCurrencyFilter] = useState<string>('All');
+
   // Mock data for Active Disputes
   const activeDisputes: DashboardDispute[] = [
     {
@@ -86,12 +92,146 @@ export default function DashboardPage() {
     }
   ];
 
+  // Get unique currencies and amounts for filters
+  const allTransactions = [...activeTransactions, ...pastTransactions];
+  const uniqueCurrencies = ['All', ...Array.from(new Set(allTransactions.map(t => t.amount.currency)))];
+  const uniqueAmounts = ['All', ...Array.from(new Set(allTransactions.map(t => t.amount.value.toString())))];
+  const uniqueStatuses = ['All', ...Array.from(new Set(allTransactions.map(t => t.status)))];
+
+  // Filter transactions based on search and filters
+  const filteredActiveTransactions = useMemo(() => {
+    return activeTransactions.filter(transaction => {
+      const matchesSearch = searchTerm === '' || 
+        transaction.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.buyer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.seller.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = statusFilter === 'All' || transaction.status === statusFilter;
+      const matchesAmount = amountFilter === 'All' || transaction.amount.value.toString() === amountFilter;
+      const matchesCurrency = currencyFilter === 'All' || transaction.amount.currency === currencyFilter;
+
+      return matchesSearch && matchesStatus && matchesAmount && matchesCurrency;
+    });
+  }, [activeTransactions, searchTerm, statusFilter, amountFilter, currencyFilter]);
+
+  const filteredPastTransactions = useMemo(() => {
+    return pastTransactions.filter(transaction => {
+      const matchesSearch = searchTerm === '' || 
+        transaction.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.buyer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.seller.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = statusFilter === 'All' || transaction.status === statusFilter;
+      const matchesAmount = amountFilter === 'All' || transaction.amount.value.toString() === amountFilter;
+      const matchesCurrency = currencyFilter === 'All' || transaction.amount.currency === currencyFilter;
+
+      return matchesSearch && matchesStatus && matchesAmount && matchesCurrency;
+    });
+  }, [pastTransactions, searchTerm, statusFilter, amountFilter, currencyFilter]);
+
+  // Group past transactions by status
+  const groupedPastTransactions = useMemo(() => {
+    const grouped = filteredPastTransactions.reduce((acc, transaction) => {
+      const status = transaction.status;
+      if (!acc[status]) {
+        acc[status] = [];
+      }
+      acc[status].push(transaction);
+      return acc;
+    }, {} as Record<string, DashboardTransaction[]>);
+
+    return grouped;
+  }, [filteredPastTransactions]);
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('All');
+    setAmountFilter('All');
+    setCurrencyFilter('All');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Transaction Dashboard</h1>
+          
+          {/* Search and Filter Section */}
+          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-8">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Search & Filter Transactions</h2>
+            
+            {/* Search Bar */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search by Transaction ID, Buyer, or Seller..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Filter Controls */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              {/* Status Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {uniqueStatuses.map(status => (
+                    <option key={status} value={status}>{status}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Currency Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+                <select
+                  value={currencyFilter}
+                  onChange={(e) => setCurrencyFilter(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {uniqueCurrencies.map(currency => (
+                    <option key={currency} value={currency}>{currency}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Amount Filter */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                <select
+                  value={amountFilter}
+                  onChange={(e) => setAmountFilter(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  {uniqueAmounts.map(amount => (
+                    <option key={amount} value={amount}>{amount}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Clear Filters Button */}
+              <div className="flex items-end">
+                <button
+                  onClick={clearFilters}
+                  className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+
+            {/* Results Summary */}
+            <div className="text-sm text-gray-600">
+              Showing {filteredActiveTransactions.length} active and {filteredPastTransactions.length} past transactions
+            </div>
+          </div>
           
           {/* Active Disputes Section */}
           <div className="mb-8">
@@ -103,16 +243,37 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Active and Past Transactions Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Active Transactions Section */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Active Transactions</h2>
             <DashboardTransactionCard 
               title="Active Transactions" 
-              transactions={activeTransactions} 
+              transactions={filteredActiveTransactions} 
             />
-            <DashboardTransactionCard 
-              title="Past Transactions" 
-              transactions={pastTransactions} 
-            />
+          </div>
+
+          {/* Past Transactions Section - Grouped by Status */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Past Transactions</h2>
+            {Object.keys(groupedPastTransactions).length > 0 ? (
+              <div className="space-y-6">
+                {Object.entries(groupedPastTransactions).map(([status, transactions]) => (
+                  <div key={status} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 capitalize">
+                      {status} Transactions ({transactions.length})
+                    </h3>
+                    <DashboardTransactionCard 
+                      title="" 
+                      transactions={transactions} 
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg shadow-md p-6 text-center">
+                <p className="text-gray-500">No past transactions match your current filters.</p>
+              </div>
+            )}
           </div>
         </div>
       </main>
