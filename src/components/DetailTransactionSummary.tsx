@@ -4,21 +4,34 @@ interface DetailTransactionSummaryProps {
   transaction: DetailTransaction;
 }
 
-const statusColors = {
-  'FUNDS LOCKED': 'bg-blue-600 text-white',
-  'FULFILLED': 'bg-green-600 text-white',
-  'DISPUTED': 'bg-red-600 text-white',
-  'REFUNDED': 'bg-gray-600 text-white',
+const statusConfig = {
+  'FUNDS LOCKED': {
+    color: 'bg-blue-600 text-white',
+    icon: '🔄'
+  },
+  'FULFILLED': {
+    color: 'bg-green-600 text-white',
+    icon: '✅'
+  },
+  'DISPUTED': {
+    color: 'bg-red-600 text-white',
+    icon: '⚠️'
+  },
+  'REFUNDED': {
+    color: 'bg-gray-600 text-white',
+    icon: '💰'
+  },
 };
 
 export const DetailTransactionSummary = ({ transaction }: DetailTransactionSummaryProps) => {
-  const statusClass = statusColors[transaction.status] || 'bg-gray-600 text-white';
+  const config = statusConfig[transaction.status] || statusConfig['REFUNDED'];
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <div className="flex items-start justify-between mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Transaction Summary</h2>
-        <span className={`px-3 py-1 text-xs font-medium rounded-full ${statusClass}`}>
+        <span className={`px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${config.color}`}>
+          <span className="text-sm">{config.icon}</span>
           {transaction.status}
         </span>
       </div>

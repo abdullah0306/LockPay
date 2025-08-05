@@ -4,15 +4,27 @@ interface EscrowTransactionOverviewProps {
   transaction: EscrowTransaction;
 }
 
-const statusColors = {
-  'DISPUTED': 'bg-red-100 text-red-800',
-  'ACTIVE': 'bg-blue-100 text-blue-800',
-  'COMPLETED': 'bg-green-100 text-green-800',
-  'REFUNDED': 'bg-gray-100 text-gray-800',
+const statusConfig = {
+  'DISPUTED': {
+    color: 'bg-red-100 text-red-800',
+    icon: '⚠️'
+  },
+  'ACTIVE': {
+    color: 'bg-blue-100 text-blue-800',
+    icon: '🔄'
+  },
+  'COMPLETED': {
+    color: 'bg-green-100 text-green-800',
+    icon: '✅'
+  },
+  'REFUNDED': {
+    color: 'bg-gray-100 text-gray-800',
+    icon: '💰'
+  },
 };
 
 export const EscrowTransactionOverview = ({ transaction }: EscrowTransactionOverviewProps) => {
-  const statusClass = statusColors[transaction.status] || 'bg-gray-100 text-gray-800';
+  const config = statusConfig[transaction.status] || statusConfig['REFUNDED'];
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
@@ -21,7 +33,8 @@ export const EscrowTransactionOverview = ({ transaction }: EscrowTransactionOver
       <div className="space-y-4 sm:space-y-4">
         <div className="flex justify-between items-center">
           <span className="text-gray-500 text-sm sm:text-base font-medium">#{transaction.id}:</span>
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusClass}`}>
+          <span className={`px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${config.color}`}>
+            <span className="text-sm">{config.icon}</span>
             {transaction.status}
           </span>
         </div>
