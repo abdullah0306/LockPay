@@ -13,7 +13,7 @@ export interface DisputeData {
     address: string;
   };
   asset: string;
-  status: string;
+  status: 'Under Review' | 'Awaiting Evidence' | 'Evidence Submitted';
   filedBy: string;
   filedOn: string;
   arbitrator: string;
