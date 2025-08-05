@@ -98,17 +98,54 @@ export default function DashboardPage() {
   const uniqueAmounts = ['All', ...Array.from(new Set(allTransactions.map(t => t.amount.value.toString())))];
   const uniqueStatuses = ['All', ...Array.from(new Set(allTransactions.map(t => t.status)))];
 
+  // Debug logging
+  console.log('Filter Options:', {
+    currencies: uniqueCurrencies,
+    amounts: uniqueAmounts,
+    statuses: uniqueStatuses,
+    currentFilters: { searchTerm, statusFilter, amountFilter, currencyFilter }
+  });
+
   // Filter transactions based on search and filters
   const filteredActiveTransactions = useMemo(() => {
     return activeTransactions.filter(transaction => {
-      const matchesSearch = searchTerm === '' || 
-        transaction.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.buyer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.seller.toLowerCase().includes(searchTerm.toLowerCase());
+      // Search filter - case insensitive and handle special characters
+      const searchLower = searchTerm.toLowerCase().trim();
+      const transactionId = transaction.id.toLowerCase();
+      const transactionIdWithHash = `#${transaction.id.toLowerCase()}`;
+      const buyerName = transaction.buyer.toLowerCase();
+      const sellerName = transaction.seller.toLowerCase();
       
+      const matchesSearch = searchTerm === '' || 
+        transactionId.includes(searchLower) ||
+        transactionIdWithHash.includes(searchLower) ||
+        buyerName.includes(searchLower) ||
+        sellerName.includes(searchLower);
+      
+      // Status filter - exact match
       const matchesStatus = statusFilter === 'All' || transaction.status === statusFilter;
+      
+      // Amount filter - convert to string for comparison
       const matchesAmount = amountFilter === 'All' || transaction.amount.value.toString() === amountFilter;
+      
+      // Currency filter - exact match
       const matchesCurrency = currencyFilter === 'All' || transaction.amount.currency === currencyFilter;
+
+      // Debug logging for search
+      if (searchTerm !== '') {
+        console.log('Search Debug:', {
+          searchTerm: searchLower,
+          transactionId,
+          transactionIdWithHash,
+          buyerName,
+          sellerName,
+          matchesSearch,
+          matchesStatus,
+          matchesAmount,
+          matchesCurrency,
+          finalResult: matchesSearch && matchesStatus && matchesAmount && matchesCurrency
+        });
+      }
 
       return matchesSearch && matchesStatus && matchesAmount && matchesCurrency;
     });
@@ -116,14 +153,43 @@ export default function DashboardPage() {
 
   const filteredPastTransactions = useMemo(() => {
     return pastTransactions.filter(transaction => {
-      const matchesSearch = searchTerm === '' || 
-        transaction.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.buyer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.seller.toLowerCase().includes(searchTerm.toLowerCase());
+      // Search filter - case insensitive and handle special characters
+      const searchLower = searchTerm.toLowerCase().trim();
+      const transactionId = transaction.id.toLowerCase();
+      const transactionIdWithHash = `#${transaction.id.toLowerCase()}`;
+      const buyerName = transaction.buyer.toLowerCase();
+      const sellerName = transaction.seller.toLowerCase();
       
+      const matchesSearch = searchTerm === '' || 
+        transactionId.includes(searchLower) ||
+        transactionIdWithHash.includes(searchLower) ||
+        buyerName.includes(searchLower) ||
+        sellerName.includes(searchLower);
+      
+      // Status filter - exact match
       const matchesStatus = statusFilter === 'All' || transaction.status === statusFilter;
+      
+      // Amount filter - convert to string for comparison
       const matchesAmount = amountFilter === 'All' || transaction.amount.value.toString() === amountFilter;
+      
+      // Currency filter - exact match
       const matchesCurrency = currencyFilter === 'All' || transaction.amount.currency === currencyFilter;
+
+      // Debug logging for search
+      if (searchTerm !== '') {
+        console.log('Search Debug (Past):', {
+          searchTerm: searchLower,
+          transactionId,
+          transactionIdWithHash,
+          buyerName,
+          sellerName,
+          matchesSearch,
+          matchesStatus,
+          matchesAmount,
+          matchesCurrency,
+          finalResult: matchesSearch && matchesStatus && matchesAmount && matchesCurrency
+        });
+      }
 
       return matchesSearch && matchesStatus && matchesAmount && matchesCurrency;
     });
@@ -140,8 +206,17 @@ export default function DashboardPage() {
       return acc;
     }, {} as Record<string, DashboardTransaction[]>);
 
+    // Debug logging
+    console.log('Filter Results:', {
+      activeCount: filteredActiveTransactions.length,
+      pastCount: filteredPastTransactions.length,
+      groupedCount: Object.keys(grouped).length,
+      activeTransactions: filteredActiveTransactions.map(t => ({ id: t.id, status: t.status })),
+      pastTransactions: filteredPastTransactions.map(t => ({ id: t.id, status: t.status }))
+    });
+
     return grouped;
-  }, [filteredPastTransactions]);
+  }, [filteredPastTransactions, filteredActiveTransactions]);
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -168,8 +243,15 @@ export default function DashboardPage() {
                 placeholder="Search by Transaction ID, Buyer, or Seller..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  searchTerm ? 'border-blue-300 bg-blue-50' : 'border-gray-300'
+                }`}
               />
+              {searchTerm && (
+                <div className="mt-2 text-sm text-blue-600">
+                  Searching for: "{searchTerm}"
+                </div>
+              )}
             </div>
 
             {/* Filter Controls */}
@@ -180,7 +262,9 @@ export default function DashboardPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    statusFilter !== 'All' ? 'border-blue-300 bg-blue-50' : 'border-gray-300'
+                  }`}
                 >
                   {uniqueStatuses.map(status => (
                     <option key={status} value={status}>{status}</option>
@@ -194,7 +278,9 @@ export default function DashboardPage() {
                 <select
                   value={currencyFilter}
                   onChange={(e) => setCurrencyFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    currencyFilter !== 'All' ? 'border-blue-300 bg-blue-50' : 'border-gray-300'
+                  }`}
                 >
                   {uniqueCurrencies.map(currency => (
                     <option key={currency} value={currency}>{currency}</option>
@@ -208,7 +294,9 @@ export default function DashboardPage() {
                 <select
                   value={amountFilter}
                   onChange={(e) => setAmountFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    amountFilter !== 'All' ? 'border-blue-300 bg-blue-50' : 'border-gray-300'
+                  }`}
                 >
                   {uniqueAmounts.map(amount => (
                     <option key={amount} value={amount}>{amount}</option>
@@ -220,12 +308,46 @@ export default function DashboardPage() {
               <div className="flex items-end">
                 <button
                   onClick={clearFilters}
-                  className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                  className={`w-full px-4 py-2 rounded-lg transition-colors ${
+                    searchTerm || statusFilter !== 'All' || amountFilter !== 'All' || currencyFilter !== 'All'
+                      ? 'bg-red-600 text-white hover:bg-red-700'
+                      : 'bg-gray-400 text-white cursor-not-allowed'
+                  }`}
+                  disabled={!searchTerm && statusFilter === 'All' && amountFilter === 'All' && currencyFilter === 'All'}
                 >
                   Clear Filters
                 </button>
               </div>
             </div>
+
+            {/* Active Filters Display */}
+            {(searchTerm || statusFilter !== 'All' || amountFilter !== 'All' || currencyFilter !== 'All') && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="text-sm font-medium text-blue-800">Active Filters:</span>
+                  {searchTerm && (
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      Search: "{searchTerm}"
+                    </span>
+                  )}
+                  {statusFilter !== 'All' && (
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      Status: {statusFilter}
+                    </span>
+                  )}
+                  {amountFilter !== 'All' && (
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      Amount: {amountFilter}
+                    </span>
+                  )}
+                  {currencyFilter !== 'All' && (
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      Currency: {currencyFilter}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Results Summary */}
             <div className="text-sm text-gray-600">
