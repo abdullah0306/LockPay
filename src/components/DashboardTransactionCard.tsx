@@ -12,27 +12,32 @@ const statusConfig = {
   'Funds Locked': {
     color: 'bg-blue-100 text-blue-800',
     icon: '🔄',
-    isActive: true
+    isActive: true,
+    tooltip: 'Transaction is active and funds are securely locked in escrow'
   },
   'Pending Review': {
     color: 'bg-yellow-100 text-yellow-800',
     icon: '⏳',
-    isActive: true
+    isActive: true,
+    tooltip: 'Transaction is being reviewed for completion or dispute resolution'
   },
   'Fulfilled': {
     color: 'bg-green-100 text-green-800',
     icon: '✅',
-    isActive: false
+    isActive: false,
+    tooltip: 'Transaction completed successfully and funds have been released'
   },
   'Disputed': {
     color: 'bg-red-100 text-red-800',
     icon: '⚠️',
-    isActive: false
+    isActive: false,
+    tooltip: 'Transaction is under review due to a dispute between parties'
   },
   'Refunded': {
     color: 'bg-gray-100 text-gray-800',
     icon: '💰',
-    isActive: false
+    isActive: false,
+    tooltip: 'Transaction was cancelled and funds have been returned'
   },
 };
 
@@ -77,27 +82,30 @@ export const DashboardTransactionCard = ({ title, transactions }: DashboardTrans
                 <span className={`font-medium ${isActive ? 'text-blue-900 text-lg' : 'text-gray-700'}`}>
                   #{transaction.id}
                 </span>
-                <span className={`px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${config.color}`}>
+                <span 
+                  className={`px-3 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${config.color}`}
+                  title={config.tooltip}
+                >
                   <span className="text-sm">{config.icon}</span>
                   {transaction.status}
                 </span>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm font-medium">Amount:</span>
-                  <span className={`font-bold text-sm ${isActive ? 'text-blue-600 text-base' : 'text-blue-600'}`}>
+                  <span className="text-gray-600 text-sm font-medium">Amount:</span>
+                  <span className={`font-bold text-sm ${isActive ? 'text-blue-700 text-base' : 'text-blue-700'}`}>
                     {transaction.amount.value} {transaction.amount.currency}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm font-medium">Buyer:</span>
-                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-900 text-base' : 'text-gray-900'}`}>
+                  <span className="text-gray-600 text-sm font-medium">Buyer:</span>
+                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-800 text-base' : 'text-gray-800'}`}>
                     {transaction.buyer}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500 text-sm font-medium">Seller:</span>
-                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-900 text-base' : 'text-gray-900'}`}>
+                  <span className="text-gray-600 text-sm font-medium">Seller:</span>
+                  <span className={`text-sm font-semibold ${isActive ? 'text-gray-800 text-base' : 'text-gray-800'}`}>
                     {transaction.seller}
                   </span>
                 </div>
