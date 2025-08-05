@@ -30,12 +30,48 @@ const statusConfig = {
   },
 };
 
+// Enhanced status details for disputed and refunded transactions
+const getStatusDetails = (transaction: Transaction) => {
+  if (transaction.status === 'Disputed') {
+    return {
+      alert: 'Under Investigation',
+      description: 'This transaction is currently being reviewed by our arbitration team.',
+      progress: {
+        current: 2,
+        total: 4,
+        steps: ['Dispute Filed', 'Evidence Review', 'Arbitration Decision', 'Resolution']
+      },
+      alertStyle: 'bg-red-50 border-red-200 text-red-800',
+      progressStyle: 'bg-red-200 text-red-600',
+      barStyle: 'bg-red-600'
+    };
+  }
+  
+  if (transaction.status === 'Refunded') {
+    return {
+      alert: '✅ Refund Processed',
+      description: 'Funds have been successfully returned to the buyer.',
+      progress: {
+        current: 4,
+        total: 4,
+        steps: ['Refund Requested', 'Processing', 'Approved', 'Completed']
+      },
+      alertStyle: 'bg-green-50 border-green-200 text-green-800',
+      progressStyle: 'bg-green-200 text-green-600',
+      barStyle: 'bg-green-600'
+    };
+  }
+  
+  return null;
+};
+
 export const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const router = useRouter();
   const config = statusConfig[transaction.status] || statusConfig['Refunded'];
   const isActive = transaction.status === 'Funds Locked';
   const isEnhancedDashboard = transaction.id === 'TXN78901';
   const isDisputed = transaction.status === 'Disputed';
+  const statusDetails = getStatusDetails(transaction);
 
   const handleTransactionClick = () => {
     // Special case: TXN78901 navigates to the enhanced dashboard
@@ -75,6 +111,47 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           </span>
         </div>
       </div>
+      
+      {/* Status Alert for Disputed/Refunded Transactions */}
+      {statusDetails && (
+        <div className={`mb-3 p-3 border rounded-lg ${statusDetails.alertStyle}`}>
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`text-sm font-semibold ${statusDetails.alertStyle.includes('text-red') ? 'text-red-800' : 'text-green-800'}`}>
+              {statusDetails.alert}
+            </span>
+          </div>
+          <p className={`text-sm mb-3 ${statusDetails.alertStyle.includes('text-red') ? 'text-red-700' : 'text-green-700'}`}>
+            {statusDetails.description}
+          </p>
+          
+          {/* Progress Tracking */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className={`text-xs font-medium ${statusDetails.progressStyle}`}>Progress</span>
+              <span className={`text-xs ${statusDetails.progressStyle}`}>
+                Step {statusDetails.progress.current} of {statusDetails.progress.total}
+              </span>
+            </div>
+            <div className={`w-full rounded-full h-2 ${statusDetails.progressStyle.replace('text-', 'bg-').replace('-600', '-200')}`}>
+              <div 
+                className={`h-2 rounded-full transition-all duration-300 ${statusDetails.barStyle}`}
+                style={{ width: `${(statusDetails.progress.current / statusDetails.progress.total) * 100}%` }}
+              ></div>
+            </div>
+            <div className={`flex justify-between text-xs ${statusDetails.progressStyle}`}>
+              {statusDetails.progress.steps.map((step, index) => (
+                <span 
+                  key={step}
+                  className={`${index < statusDetails.progress.current ? 'font-semibold' : 'opacity-50'}`}
+                >
+                  {step}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="space-y-2">
         <div className="flex justify-between">
           <span className="text-gray-600">Amount:</span>
@@ -100,9 +177,6 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
             <span className="text-sm font-semibold">Click to view Enhanced Dashboard</span>
-            {/* <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg> */}
           </div>
         </div>
       )}
@@ -115,9 +189,6 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
             <span className="text-sm font-semibold">Click to view Dispute Details</span>
-            {/* <svg className="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg> */}
           </div>
         </div>
       )}
