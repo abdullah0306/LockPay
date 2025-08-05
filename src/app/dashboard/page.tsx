@@ -249,7 +249,7 @@ export default function DashboardPage() {
               />
               {searchTerm && (
                 <div className="mt-2 text-sm text-blue-600">
-                  Searching for: "{searchTerm}"
+                  Searching for: &quot;{searchTerm}&quot;
                 </div>
               )}
             </div>
@@ -327,7 +327,7 @@ export default function DashboardPage() {
                   <span className="text-sm font-medium text-blue-800">Active Filters:</span>
                   {searchTerm && (
                     <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                      Search: "{searchTerm}"
+                      Search: &quot;{searchTerm}&quot;
                     </span>
                   )}
                   {statusFilter !== 'All' && (
