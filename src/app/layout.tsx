@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThirdwebProvider } from "thirdweb/react";
+import { ThirdwebProvider } from "@/components/ThirdwebProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
+  title: "LockPay - Secure Escrow Service",
   description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+    "Secure blockchain-based escrow service for safe transactions",
 };
 
 export default function RootLayout({
