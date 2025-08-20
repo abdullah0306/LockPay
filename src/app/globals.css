@@ -36,3 +36,22 @@ body {
 * {
   font-family: 'ALIKE';
 }
+
+/* Custom styles for thirdweb ConnectButton */
+[data-testid="connect-wallet-button"] {
+  @apply w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm !important;
+}
+
+/* Responsive wallet button container */
+.wallet-connect-container {
+  @apply w-full sm:w-auto;
+}
+
+/* Ensure wallet address is always visible */
+.wallet-address {
+  @apply text-xs sm:text-sm;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

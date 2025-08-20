@@ -50,7 +50,7 @@ export const Header = () => {
                     </div>
 
                     {/* Right Section - Search, Connect Wallet, User Icon */}
-                    <div className="flex items-center space-x-2 lg:space-x-4">
+                    <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
                         {/* Search Bar - Hidden on mobile */}
                         <div className="relative hidden md:block">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -76,12 +76,14 @@ export const Header = () => {
                         </div>
 
                         {/* Connect Wallet Button */}
-                        <WalletConnect />
+                        <div className="flex-shrink-0 min-w-0">
+                            <WalletConnect />
+                        </div>
 
                         {/* User Icon */}
-                        <Link href="/profile" className="p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                        <Link href="/profile" className="p-1.5 sm:p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors flex-shrink-0">
                             <svg
-                                className="w-5 h-5 lg:w-6 lg:h-6"
+                                className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -98,10 +100,10 @@ export const Header = () => {
                         {/* Mobile menu button */}
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="lg:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
+                            className="lg:hidden p-1.5 sm:p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors flex-shrink-0"
                         >
                             <svg
-                                className="w-6 h-6"
+                                className="w-5 h-5 sm:w-6 sm:h-6"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
