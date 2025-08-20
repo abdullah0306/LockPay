@@ -13,7 +13,8 @@ export const Header = () => {
     const navItems = [
         { name: 'Dashboard', href: '/' },
         { name: 'Detail', href: '/detail' },
-        { name: 'State', href: '/state' }
+        { name: 'State', href: '/state' },
+        { name: 'Profile', href: '/profile' }
     ];
 
     const isActive = (href: string) => pathname === href;
@@ -78,7 +79,7 @@ export const Header = () => {
                         <WalletConnect />
 
                         {/* User Icon */}
-                        <button className="p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                        <Link href="/profile" className="p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
                             <svg
                                 className="w-5 h-5 lg:w-6 lg:h-6"
                                 fill="none"
@@ -92,7 +93,7 @@ export const Header = () => {
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                 />
                             </svg>
-                        </button>
+                        </Link>
 
                         {/* Mobile menu button */}
                         <button
