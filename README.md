@@ -1,9 +1,16 @@
 
 ![tw-banner](https://github.com/thirdweb-example/next-starter/assets/57885104/20c8ce3b-4e55-4f10-ae03-2fe4743a5ee8)
 
-# thirdweb-next-starter
+# LockPay - Secure Escrow Service
 
-Starter template to build an onchain react native app with [thirdweb](https://thirdweb.com/) and [next](https://nextjs.org/).
+A secure blockchain-based escrow service built with [thirdweb](https://thirdweb.com/) and [Next.js](https://nextjs.org/).
+
+## Features
+
+- 🔐 **MetaMask Wallet Integration** - Seamless wallet connection using thirdweb
+- 💼 **Transaction Dashboard** - View and manage your escrow transactions
+- 🛡️ **Dispute Resolution** - Built-in arbitration system for transaction disputes
+- 📱 **Responsive Design** - Works perfectly on desktop and mobile devices
 
 ## Installation
 
@@ -15,11 +22,30 @@ Install the template using [thirdweb create](https://portal.thirdweb.com/cli/cre
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file:
+To run this project, you will need to add the following environment variables to your `.env.local` file:
 
-`CLIENT_ID`
+```
+NEXT_PUBLIC_THIRDWEB_CLIENT_ID=your-client-id-here
+```
 
-To learn how to create a client ID, refer to the [client documentation](https://portal.thirdweb.com/typescript/v5/client). 
+### Getting Your Client ID
+
+1. Go to [thirdweb dashboard](https://thirdweb.com/dashboard)
+2. Create a new project or select an existing one
+3. Navigate to the API Keys section
+4. Copy your Client ID
+5. Add it to your `.env.local` file
+
+## Wallet Integration
+
+This project includes seamless MetaMask wallet integration:
+
+- **Connect Wallet**: Click the "Connect Wallet" button in the header to connect your MetaMask wallet
+- **Wallet Status**: See your connected wallet address and connection status
+- **Disconnect**: Use the disconnect button to safely disconnect your wallet
+- **Responsive**: Works on both desktop and mobile devices
+
+The wallet integration is built using thirdweb's ConnectWallet component and provides a smooth user experience for blockchain interactions. 
 
 ## Run locally
 
