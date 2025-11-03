@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { ConnectButton, useActiveAccount } from 'thirdweb/react';
+import { ConnectButton, useActiveAccount, useActiveWallet, useConnectionManager } from 'thirdweb/react';
 import { createThirdwebClient } from 'thirdweb';
 
 const client = createThirdwebClient({
@@ -10,55 +10,47 @@ const client = createThirdwebClient({
 
 export const WalletConnect = () => {
   const account = useActiveAccount();
+  const wallet = useActiveWallet();
+  const manager = useConnectionManager();
   const [isConnected, setIsConnected] = useState(false);
   const [shortAddress, setShortAddress] = useState('');
 
   useEffect(() => {
-    console.log('WalletConnect: account changed', account);
     setIsConnected(!!account);
     if (account?.address) {
       const address = account.address;
-      console.log('WalletConnect: address found', address);
       if (address.length > 10) {
         const shortAddr = `${address.slice(0, 6)}...${address.slice(-4)}`;
-        console.log('WalletConnect: setting short address', shortAddr);
         setShortAddress(shortAddr);
       } else {
-        console.log('WalletConnect: setting full address', address);
         setShortAddress(address);
       }
     } else {
-      console.log('WalletConnect: no address, clearing');
       setShortAddress('');
     }
   }, [account]);
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
     try {
-      // Clear any stored wallet data
-      localStorage.removeItem('thirdweb:wallet');
-      localStorage.removeItem('thirdweb:connected');
-      sessionStorage.removeItem('thirdweb:wallet');
-      sessionStorage.removeItem('thirdweb:connected');
-      
-      // Clear any other thirdweb related storage
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('thirdweb')) {
-          localStorage.removeItem(key);
-        }
-      });
-      
-      Object.keys(sessionStorage).forEach(key => {
-        if (key.startsWith('thirdweb')) {
-          sessionStorage.removeItem(key);
-        }
-      });
+      if (manager) {
+        // Disconnect using the connection manager
+        await manager.disconnect();
+      } else if (wallet) {
+        // Fallback: try to disconnect the wallet directly
+        const { disconnect } = await import('thirdweb/wallets');
+        await disconnect(wallet);
+      }
     } catch (error) {
-      console.error('Error clearing wallet data:', error);
+      console.error('Error disconnecting wallet:', error);
+      // If all else fails, clear local storage and reload
+      try {
+        localStorage.removeItem('thirdweb_wallet');
+        localStorage.removeItem('thirdweb_connected_wallet');
+        window.location.reload();
+      } catch (e) {
+        console.error('Error clearing storage:', e);
+      }
     }
-    
-    // Reload the page to reset the connection state
-    window.location.reload();
   };
 
   if (isConnected && account?.address) {
