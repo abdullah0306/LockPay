@@ -3,6 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Header } from '@/components/Header';
+import { WalletProtected } from '@/components/WalletProtected';
 import { DisputeSummary } from '@/components/DisputeSummary';
 import { EvidenceReview } from '@/components/EvidenceReview';
 import { ArbitrationDecision } from '@/components/ArbitrationDecision';
@@ -62,9 +63,10 @@ export default function DisputeArbitrationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
-      <Header />
-      <main className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <WalletProtected>
+      <div className="min-h-screen bg-[#F5F5F5]">
+        <Header />
+        <main className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl lg:max-w-7xl mx-auto space-y-6 sm:space-y-8">
           {/* Main Title */}
           <div>
@@ -96,6 +98,7 @@ export default function DisputeArbitrationPage() {
           />
         </div>
       </main>
-    </div>
+      </div>
+    </WalletProtected>
   );
 } 

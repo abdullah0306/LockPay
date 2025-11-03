@@ -1,6 +1,9 @@
+"use client";
+
 import { Transaction } from '@/types/transaction';
 import { TransactionCard } from '@/components/TransactionCard';
 import { Header } from '@/components/Header';
+import { WalletProtected } from '@/components/WalletProtected';
 
 const activeTransactions: Transaction[] = [
   {
@@ -45,17 +48,19 @@ const pastTransactions: Transaction[] = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
-      <Header />
-      <main className="py-12 px-6 sm:px-8 lg:px-12">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-[#121417] mb-8">Transaction Dashboard</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <TransactionCard title="Active Transactions" transactions={activeTransactions} />
-            <TransactionCard title="Past Transactions" transactions={pastTransactions} />
+    <WalletProtected>
+      <div className="min-h-screen bg-[#F5F5F5]">
+        <Header />
+        <main className="py-12 px-6 sm:px-8 lg:px-12">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-3xl font-bold text-[#121417] mb-8">Transaction Dashboard</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <TransactionCard title="Active Transactions" transactions={activeTransactions} />
+              <TransactionCard title="Past Transactions" transactions={pastTransactions} />
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </WalletProtected>
   );
 }

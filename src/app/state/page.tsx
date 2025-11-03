@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
+import { WalletProtected } from '@/components/WalletProtected';
 import { EscrowTransactionOverview } from '@/components/EscrowTransactionOverview';
 import { EscrowStatusIndicators } from '@/components/EscrowStatusIndicators';
 import { EscrowReleaseConditions } from '@/components/EscrowReleaseConditions';
@@ -163,9 +164,10 @@ export default function StatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <WalletProtected>
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <main className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl lg:max-w-7xl mx-auto space-y-6 sm:space-y-8">
           {/* Main Title */}
           <div>
@@ -211,6 +213,7 @@ export default function StatePage() {
           <EscrowFundsHistory history={escrowFundsHistory} />
         </div>
       </main>
-    </div>
+      </div>
+    </WalletProtected>
   );
 } 

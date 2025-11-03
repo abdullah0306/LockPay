@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
+import { WalletProtected } from '@/components/WalletProtected';
 import { TransactionOverview } from '@/components/TransactionOverview';
 import { ReleaseConditions } from '@/components/ReleaseConditions';
 import { DisputeDetails } from '@/components/DisputeDetails';
@@ -66,9 +67,10 @@ export default function TransactionDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
-      <Header />
-      <main className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <WalletProtected>
+      <div className="min-h-screen bg-[#F5F5F5]">
+        <Header />
+        <main className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl lg:max-w-7xl mx-auto space-y-6 sm:space-y-8">
           {/* Back to Dashboard Link */}
           <div>
@@ -104,6 +106,7 @@ export default function TransactionDetailsPage() {
           />
         </div>
       </main>
-    </div>
+      </div>
+    </WalletProtected>
   );
 } 

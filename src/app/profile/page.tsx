@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
+import { WalletProtected } from '@/components/WalletProtected';
 import { useActiveAccount } from 'thirdweb/react';
 import { createThirdwebClient } from 'thirdweb';
 
@@ -124,32 +125,16 @@ export default function ProfilePage() {
   const totalPortfolioValue = tokenBalances.reduce((sum, token) => sum + token.value, 0) + (parseFloat(ethBalance) * 2000);
 
   if (!account) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <main className="py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-8 text-center border border-gray-200">
-              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">Wallet Not Connected</h2>
-              <p className="text-gray-600 text-lg">Connect your wallet to view your portfolio</p>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
+    return null; // WalletProtected will handle the UI
   }
 
   const shortAddress = `${account.address.slice(0, 6)}...${account.address.slice(-4)}`;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="py-8 px-4 sm:px-6 lg:px-8">
+    <WalletProtected>
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <main className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Hero Section */}
           <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl shadow-xl p-8 mb-8 relative overflow-hidden">
@@ -494,6 +479,7 @@ export default function ProfilePage() {
           )}
         </div>
       </main>
-    </div>
+      </div>
+    </WalletProtected>
   );
 }
