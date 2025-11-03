@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { ConnectButton, useActiveAccount, useActiveWallet, useConnectionManager } from 'thirdweb/react';
+import { ConnectButton, useActiveAccount, useActiveWallet, useDisconnect } from 'thirdweb/react';
 import { createThirdwebClient } from 'thirdweb';
 
 const client = createThirdwebClient({
@@ -11,7 +11,7 @@ const client = createThirdwebClient({
 export const WalletConnect = () => {
   const account = useActiveAccount();
   const wallet = useActiveWallet();
-  const manager = useConnectionManager();
+  const { disconnect } = useDisconnect();
   const [isConnected, setIsConnected] = useState(false);
   const [shortAddress, setShortAddress] = useState('');
 
@@ -32,23 +32,25 @@ export const WalletConnect = () => {
 
   const handleDisconnect = async () => {
     try {
-      if (manager) {
-        // Disconnect using the connection manager
-        await manager.disconnect();
-      } else if (wallet) {
-        // Fallback: try to disconnect the wallet directly
-        const { disconnect } = await import('thirdweb/wallets');
+      if (wallet) {
+        // Disconnect the active wallet using thirdweb's disconnect function
         await disconnect(wallet);
       }
     } catch (error) {
       console.error('Error disconnecting wallet:', error);
-      // If all else fails, clear local storage and reload
+      // If disconnect fails, try clearing storage as fallback
       try {
-        localStorage.removeItem('thirdweb_wallet');
-        localStorage.removeItem('thirdweb_connected_wallet');
+        // Clear thirdweb-related storage
+        const keys = Object.keys(localStorage);
+        keys.forEach(key => {
+          if (key.startsWith('thirdweb') || key.includes('wallet')) {
+            localStorage.removeItem(key);
+          }
+        });
+        // Reload to reset state
         window.location.reload();
       } catch (e) {
-        console.error('Error clearing storage:', e);
+        console.error('Error in fallback disconnect:', e);
       }
     }
   };
