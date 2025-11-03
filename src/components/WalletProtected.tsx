@@ -43,7 +43,7 @@ export const WalletProtected = ({ children }: WalletProtectedProps) => {
 
               {/* Description */}
               <p className="text-gray-600 text-base sm:text-lg mb-8">
-                Please connect your wallet to access this page and use LockPay's escrow services.
+                Please connect your wallet to access this page and use LockPay&apos;s escrow services.
               </p>
 
               {/* Connect Wallet Button */}
