@@ -1,7 +1,7 @@
 "use client";
 
+import Link from 'next/link';
 import { useActiveAccount } from 'thirdweb/react';
-import { Header } from './Header';
 import { WalletConnect } from './WalletConnect';
 
 interface WalletProtectedProps {
@@ -11,11 +11,28 @@ interface WalletProtectedProps {
 export const WalletProtected = ({ children }: WalletProtectedProps) => {
   const account = useActiveAccount();
 
-  // If wallet is not connected, show connect prompt
+  // If wallet is not connected (or disconnected), show connect prompt immediately
+  // This will automatically react to wallet disconnection events
   if (!account) {
     return (
       <div className="min-h-screen bg-[#F5F5F5]">
-        <Header />
+        {/* Minimal header for wallet connection screen */}
+        <header className="bg-[#121417] text-white">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+            <div className="flex items-center justify-between h-16">
+              {/* Logo only */}
+              <div className="flex items-center">
+                <Link href="/" className="flex items-center gap-2">
+                  <img src="/logo.svg" alt="logo" className="h-8 md:h-10" />
+                </Link>
+              </div>
+              {/* Connect Wallet Button */}
+              <div className="flex-shrink-0">
+                <WalletConnect />
+              </div>
+            </div>
+          </div>
+        </header>
         <main className="flex items-center justify-center min-h-[calc(100vh-4rem)] py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full">
             <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-10 text-center border border-gray-200">
@@ -67,13 +84,13 @@ export const WalletProtected = ({ children }: WalletProtectedProps) => {
                   >
                     Get MetaMask →
                   </a>
-                  <span className="hidden sm:inline text-gray-300">|</span>
+                  {/* <span className="hidden sm:inline text-gray-300">|</span>
                   <a 
                     href="/" 
                     className="text-blue-600 hover:text-blue-700 font-medium"
                   >
                     Back to Home →
-                  </a>
+                  </a> */}
                 </div>
               </div>
             </div>
