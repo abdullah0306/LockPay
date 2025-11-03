@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { Header } from '../../../components/Header';
+import { WalletProtected } from '../../../components/WalletProtected';
 import { ViewEvidenceDetails } from '../../../components/ViewEvidenceDetails';
 import { ViewEvidenceDocument } from '../../../components/ViewEvidenceDocument';
 
@@ -29,9 +30,10 @@ export default function ViewEvidencePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="py-8 sm:py-12 px-6 sm:px-8 lg:px-12">
+    <WalletProtected>
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <main className="py-8 sm:py-12 px-6 sm:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Page Title */}
           <div className="mb-8">
@@ -69,6 +71,7 @@ export default function ViewEvidencePage() {
           </div>
         </div>
       </main>
-    </div>
+      </div>
+    </WalletProtected>
   );
 } 
