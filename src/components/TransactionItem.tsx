@@ -46,7 +46,7 @@ const getStatusDetails = (transaction: Transaction) => {
       barStyle: 'bg-red-600'
     };
   }
-  
+
   if (transaction.status === 'Refunded') {
     return {
       alert: '✅ Refund Processed',
@@ -61,7 +61,7 @@ const getStatusDetails = (transaction: Transaction) => {
       barStyle: 'bg-green-600'
     };
   }
-  
+
   return null;
 };
 
@@ -77,18 +77,18 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
     // Special case: TXN78901 navigates to the enhanced dashboard
     if (isEnhancedDashboard) {
       router.push('/dashboard');
-    } 
+    }
     // Special case: Disputed transactions navigate to disputes page
     else if (isDisputed) {
       router.push(`/disputes/${transaction.id}`);
-    } 
+    }
     else {
       router.push(`/transactions/${transaction.id}`);
     }
   };
 
   return (
-    <div 
+    <div
       className="border-b border-gray-100 py-4 last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors"
       onClick={handleTransactionClick}
     >
@@ -102,7 +102,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
               <span className="text-xs text-green-600 font-medium">Live</span>
             </div>
           )}
-          <span 
+          <span
             className={`px-3 py-1 rounded-full text-sm flex items-center gap-1 ${config.color}`}
             title={config.tooltip}
           >
@@ -111,7 +111,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           </span>
         </div>
       </div>
-      
+
       {/* Status Alert for Disputed/Refunded Transactions */}
       {statusDetails && (
         <div className={`mb-3 p-3 border rounded-lg ${statusDetails.alertStyle}`}>
@@ -123,7 +123,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           <p className={`text-sm mb-3 ${statusDetails.alertStyle.includes('text-red') ? 'text-red-700' : 'text-green-700'}`}>
             {statusDetails.description}
           </p>
-          
+
           {/* Progress Tracking */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
@@ -133,14 +133,14 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
               </span>
             </div>
             <div className={`w-full rounded-full h-2 ${statusDetails.progressStyle.replace('text-', 'bg-').replace('-600', '-200')}`}>
-              <div 
+              <div
                 className={`h-2 rounded-full transition-all duration-300 ${statusDetails.barStyle}`}
                 style={{ width: `${(statusDetails.progress.current / statusDetails.progress.total) * 100}%` }}
               ></div>
             </div>
             <div className={`flex justify-between text-xs ${statusDetails.progressStyle}`}>
               {statusDetails.progress.steps.map((step, index) => (
-                <span 
+                <span
                   key={step}
                   className={`${index < statusDetails.progress.current ? 'font-semibold' : 'opacity-50'}`}
                 >
@@ -151,7 +151,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           </div>
         </div>
       )}
-      
+
       <div className="space-y-2">
         <div className="flex justify-between">
           <span className="text-gray-600">Amount:</span>
@@ -168,7 +168,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           <span className="text-gray-800">{transaction.seller}</span>
         </div>
       </div>
-      
+
       {/* Enhanced Dashboard Link Indicator */}
       {isEnhancedDashboard && (
         <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors">
@@ -180,7 +180,7 @@ export const TransactionItem = ({ transaction }: TransactionItemProps) => {
           </div>
         </div>
       )}
-      
+
       {/* Dispute Link Indicator */}
       {isDisputed && (
         <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors">
