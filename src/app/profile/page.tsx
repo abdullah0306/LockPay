@@ -1,10 +1,11 @@
 "use client";
 
+import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import { Header } from '@/components/Header';
 import { WalletProtected } from '@/components/WalletProtected';
 import { useActiveAccount, useActiveWallet } from 'thirdweb/react';
-import { Insight, NATIVE_TOKEN_ADDRESS, createThirdwebClient } from 'thirdweb';
+import { Insight, NATIVE_TOKEN_ADDRESS, createThirdwebClient, toTokens } from 'thirdweb';
 import { getWalletBalance } from 'thirdweb/wallets';
 import { convertCryptoToFiat } from 'thirdweb/pay';
 import { resolveScheme } from 'thirdweb/storage';
@@ -50,10 +51,24 @@ interface NFT {
   image: string;
   tokenId: string;
   floorPrice?: number;
+  detailUrl?: string;
 }
 
 type OwnedToken = Awaited<ReturnType<typeof Insight.getOwnedTokens>>[number];
 type OwnedTokenWithAddress = OwnedToken & { tokenAddress: string };
+type InsightTransaction = Awaited<ReturnType<typeof Insight.getTransactions>>[number];
+
+interface WalletActivity {
+  hash: string;
+  direction: 'in' | 'out' | 'self';
+  counterparty: string;
+  timestamp: number;
+  value: number;
+  valueDisplay: string;
+  nativeSymbol: string;
+  status?: number;
+  functionName?: string;
+}
 
 export default function ProfilePage() {
   const account = useActiveAccount();
@@ -63,6 +78,7 @@ export default function ProfilePage() {
   const [ethFiatValue, setEthFiatValue] = useState<number>(0);
   const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
   const [nfts, setNfts] = useState<NFT[]>([]);
+  const [activities, setActivities] = useState<WalletActivity[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [selectedTab, setSelectedTab] = useState<'overview' | 'tokens' | 'nfts'>('overview');
 
@@ -85,6 +101,7 @@ export default function ProfilePage() {
       setEthFiatValue(0);
       setTokenBalances([]);
       setNfts([]);
+      setActivities([]);
       return;
     }
 
@@ -105,6 +122,7 @@ export default function ProfilePage() {
         nativeBalanceResult,
         tokenResults,
         nftResults,
+        transactionResults,
       ] = await Promise.all([
         getWalletBalance({
           address: account.address,
@@ -132,6 +150,17 @@ export default function ProfilePage() {
             includeMetadata: true,
           }).catch((error) => {
             console.error('Error fetching owned NFTs:', error);
+            return [];
+          })
+          : Promise.resolve([]),
+        shouldQueryInsight
+          ? Insight.getTransactions({
+            client,
+            chains: [chain],
+            walletAddress: account.address,
+            queryOptions: { limit: 25 },
+          }).catch((error) => {
+            console.error('Error fetching wallet transactions:', error);
             return [];
           })
           : Promise.resolve([]),
@@ -221,6 +250,7 @@ export default function ProfilePage() {
           nft.metadata?.image ||
           nft.metadata?.image_url ||
           nft.metadata?.animation_url;
+        const detailUrl = `/nft/${chain.id}/${nft.tokenAddress}/${tokenId}?chainName=${encodeURIComponent(chain.name ?? '')}&chainSymbol=${encodeURIComponent(chain.nativeCurrency?.symbol ?? '')}&chainDecimals=${chain.nativeCurrency?.decimals ?? 18}&isTestnet=${chain.testnet ? 'true' : 'false'}`;
 
         return {
           name,
@@ -228,10 +258,69 @@ export default function ProfilePage() {
           image: getNftImageUrl(typeof possibleImage === 'string' ? possibleImage : undefined),
           tokenId,
           floorPrice: undefined,
+          detailUrl,
         };
       });
 
       setNfts(processedNfts);
+
+      const walletAddressLower = account.address.toLowerCase();
+      const nativeSymbol = chain.nativeCurrency?.symbol ?? 'ETH';
+      const nativeDecimals = chain.nativeCurrency?.decimals ?? 18;
+
+      const processedActivities: WalletActivity[] = (transactionResults ?? [])
+        .map((tx: InsightTransaction) => {
+          const from = tx.from_address?.toLowerCase?.() ?? '';
+          const to = tx.to_address?.toLowerCase?.() ?? '';
+
+          let direction: WalletActivity['direction'] = 'self';
+          if (from === walletAddressLower && to === walletAddressLower) {
+            direction = 'self';
+          } else if (from === walletAddressLower) {
+            direction = 'out';
+          } else if (to === walletAddressLower) {
+            direction = 'in';
+          }
+
+          const counterparty =
+            direction === 'out'
+              ? (tx.to_address ?? 'External')
+              : direction === 'in'
+                ? (tx.from_address ?? 'External')
+                : (tx.to_address ?? tx.from_address ?? 'Self');
+
+          let valueNumber = 0;
+          let valueDisplay = '0';
+          try {
+            const tokenValue = toTokens(BigInt(tx.value ?? '0'), nativeDecimals);
+            valueNumber = Number(tokenValue);
+            valueDisplay = Number.isFinite(valueNumber)
+              ? (valueNumber >= 1 ? valueNumber.toFixed(4) : valueNumber.toFixed(6))
+              : '0';
+          } catch (error) {
+            console.warn('Unable to convert transaction value:', error);
+          }
+
+          const timestamp = tx.block_timestamp
+            ? tx.block_timestamp * 1000
+            : Date.now();
+
+          return {
+            hash: tx.hash,
+            direction,
+            counterparty,
+            timestamp,
+            value: valueNumber,
+            valueDisplay,
+            nativeSymbol,
+            status: tx.status,
+            functionName: tx.decoded?.name,
+          };
+        })
+        .sort((a, b) => b.timestamp - a.timestamp)
+        .slice(0, 10);
+
+      setActivities(processedActivities);
     } catch (error) {
       console.error('Error loading wallet data:', error);
     } finally {
@@ -477,7 +566,11 @@ export default function ProfilePage() {
                       </div>
                     ) : (
                       nfts.slice(0, 3).map((nft, index) => (
-                        <div key={index} className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200 cursor-pointer group">
+                        <Link
+                          key={index}
+                          href={nft.detailUrl || '#'}
+                          className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200 group"
+                        >
                           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0">
                             <span className="text-white font-bold text-xs">NFT</span>
                           </div>
@@ -486,13 +579,114 @@ export default function ProfilePage() {
                             <p className="text-gray-600 text-xs sm:text-sm truncate">{nft.collection}</p>
                           </div>
                           <div className="text-right flex-shrink-0">
-                            <div className="font-semibold text-gray-900 text-sm sm:text-base">{nft.floorPrice} ETH</div>
+                            <div className="font-semibold text-gray-900 text-sm sm:text-base">{nft.floorPrice ? `${nft.floorPrice} ETH` : '--'}</div>
                             <div className="text-gray-600 text-xs sm:text-sm">Floor</div>
                           </div>
-                        </div>
+                        </Link>
                       ))
                     )}
                   </div>
+                </div>
+
+                {/* Recent Activity */}
+                <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 border border-gray-200 xl:col-span-2">
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">Recent Activity</h2>
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h3.75M9 15h3.75M9 9h3.75m3.75 6H15m1.5 3H15m1.5-6H15m1.5-3H15m-2.25 9H9a1.125 1.125 0 01-1.125-1.125V7.125C7.875 6.504 8.379 6 9 6h6c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125z" />
+                      </svg>
+                    </div>
+                  </div>
+                  {isLoading ? (
+                    <div className="space-y-4 animate-pulse">
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <div key={index} className="flex items-center justify-between bg-gray-50 rounded-xl p-4">
+                          <div className="space-y-2">
+                            <div className="h-4 w-24 bg-gray-200 rounded" />
+                            <div className="h-3 w-32 bg-gray-200 rounded" />
+                          </div>
+                          <div className="h-4 w-20 bg-gray-200 rounded" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : activities.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-center text-gray-500">
+                      <div className="w-14 h-14 mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                        <svg className="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                        </svg>
+                      </div>
+                      <p className="text-sm sm:text-base">No transactions found in the last 90 days.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {activities.map((activity) => {
+                        const directionLabel =
+                          activity.direction === 'in'
+                            ? 'Received'
+                            : activity.direction === 'out'
+                              ? 'Sent'
+                              : 'Self';
+                        const directionStyles =
+                          activity.direction === 'in'
+                            ? 'bg-green-100 text-green-700'
+                            : activity.direction === 'out'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-blue-100 text-blue-700';
+                        const statusLabel =
+                          activity.status === 1
+                            ? 'Success'
+                            : activity.status === 0
+                              ? 'Failed'
+                              : 'Pending';
+                        const statusStyles =
+                          activity.status === 1
+                            ? 'text-green-600'
+                            : activity.status === 0
+                              ? 'text-red-600'
+                              : 'text-yellow-600';
+
+                        return (
+                          <div key={activity.hash} className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-all duration-200">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                              <div className="flex items-center gap-3">
+                                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${directionStyles}`}>
+                                  {directionLabel}
+                                </span>
+                                <div>
+                                  <div className="flex items-center gap-2 text-sm sm:text-base text-gray-900 font-semibold">
+                                    {activity.valueDisplay} {activity.nativeSymbol}
+                                    <span className={`text-xs font-medium ${statusStyles}`}>{statusLabel}</span>
+                                  </div>
+                                  <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-500 mt-1">
+                                    <span className="font-mono">
+                                      {`${activity.hash.slice(0, 6)}...${activity.hash.slice(-4)}`}
+                                    </span>
+                                    <span>•</span>
+                                    <span>{new Date(activity.timestamp).toLocaleString()}</span>
+                                    {activity.functionName && (
+                                      <>
+                                        <span>•</span>
+                                        <span>{activity.functionName}</span>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-xs sm:text-sm text-gray-600">
+                                <span className="font-medium">
+                                  {activity.direction === 'out' ? 'To:' : activity.direction === 'in' ? 'From:' : 'With:'}
+                                </span>{' '}
+                                <span className="font-mono">{`${activity.counterparty.slice(0, 6)}...${activity.counterparty.slice(-4)}`}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -583,27 +777,28 @@ export default function ProfilePage() {
                     ))
                   ) : (
                     nfts.map((nft, index) => (
-                      <div key={index} className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-all duration-200 cursor-pointer group border border-gray-200 hover:border-gray-300">
+                      <Link
+                        key={index}
+                        href={nft.detailUrl || '#'}
+                        className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-all duration-200 group border border-gray-200 hover:border-gray-300 flex flex-col"
+                      >
                         <div className="w-full h-32 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl mb-4 flex items-center justify-center">
                           <span className="text-white font-bold text-lg">NFT #{nft.tokenId}</span>
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 flex-1">
                           <h3 className="font-semibold text-gray-900 truncate">{nft.name}</h3>
                           <p className="text-gray-600 text-sm truncate">{nft.collection}</p>
                           <div className="flex items-center justify-between">
-                            <span className="text-green-600 font-medium">{nft.floorPrice} ETH</span>
-                            <button
-                              onClick={() => alert(`Viewing ${nft.name} from ${nft.collection}`)}
-                              className="text-purple-600 hover:text-purple-700 transition-colors"
-                              title="View NFT details"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <span className="text-green-600 font-medium">{nft.floorPrice ? `${nft.floorPrice} ETH` : '--'}</span>
+                            <div className="text-purple-600 group-hover:text-purple-700 transition-colors text-sm font-medium flex items-center gap-1">
+                              View
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                               </svg>
-                            </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     ))
                   )}
                 </div>
